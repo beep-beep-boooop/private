@@ -1,0 +1,1 @@
+{"name":"Message Logger but now with Edit Logger","description":"Temporarily logs edits and deletions for moderation purposes","authors":[{"name":"You!","id":"0"}],"main":"index.js","vendetta":{"icon":"ic_audit_log_24px"},"hash":"f6071a13b79972477fa1d59040c9892ca20af7e1dccb1a2eb23ef49bfc279022"}
