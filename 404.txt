@@ -1,1 +1,0 @@
-print("fetched script and evaluated successfully")
