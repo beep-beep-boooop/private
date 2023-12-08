@@ -1,1 +1,1 @@
-(function(n){"use strict";let e=[];var o={onLoad:function(){e.push(function(){window.enmity={modules:{},assets:{},plugins:{},patcher:{}}})},onUnload:function(){for(const t of e)t()}};return n.default=o,Object.defineProperty(n,"__esModule",{value:!0}),n})({});
+(function(n){"use strict";let e=[];var o={onLoad:function(){e.push(function(){window.enmity={modules:{},assets:{},plugins:{},patcher:{}},window.themes={}})},onUnload:function(){for(const t of e)t()}};return n.default=o,Object.defineProperty(n,"__esModule",{value:!0}),n})({});
