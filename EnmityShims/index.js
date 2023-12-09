@@ -1,1 +1,47 @@
-(function(e){"use strict";let t=[];var o={onLoad:function(){t.push(function(){window.enmity={modules:{},themer:{},patcher:{},version:{},plugins:{},clyde:{sendReply:function(n,i,u,s){}},commands:{registerCommands:function(n,i){},unregisterCommands:function(n){}},utilities:{},settings:{},components:{},native:{reload:function(){}},assets:{find:function(n){},getByName:function(n){},getByID:function(n){},getIDByName:function(n){}}},window.themes={}})},onUnload:function(){for(const n of t)n()}};return e.default=o,Object.defineProperty(e,"__esModule",{value:!0}),e})({});
+(function(exports){'use strict';let patches = [];
+var index = {
+  onLoad: function() {
+    patches.push(function() {
+      window.enmity = {
+        modules: {},
+        themer: {},
+        patcher: {},
+        version: {},
+        plugins: {},
+        clyde: {
+          sendReply: function(channelID, content, username, avatarURL) {
+          }
+        },
+        commands: {
+          registerCommands: function(caller, commands) {
+          },
+          unregisterCommands: function(caller) {
+          }
+        },
+        utilities: {},
+        settings: {},
+        components: {},
+        native: {
+          reload: function() {
+          }
+        },
+        assets: {
+          find: function(filter) {
+          },
+          getByName: function(name) {
+          },
+          getByID: function(id) {
+          },
+          getIDByName: function(name) {
+          }
+        }
+      };
+      window.themes = {};
+    });
+  },
+  onUnload: function() {
+    for (const unpatch of patches) {
+      unpatch();
+    }
+  }
+};exports.default=index;Object.defineProperty(exports,'__esModule',{value:true});return exports;})({});

@@ -1,7 +1,123 @@
-(function(l,a,n,c,y,P){"use strict";const{View:R,Text:r,Pressable:h}=a.findByProps("Button","Text","View"),g=a.findByProps("extractTimestamp"),o=n.stylesheet.createThemedStyleSheet({container:{flex:1,padding:16,alignItems:"center",justifyContent:"center"},title:{fontFamily:n.constants.Fonts.PRIMARY_SEMIBOLD,fontSize:24,textAlign:"left",color:y.semanticColors.HEADER_PRIMARY,paddingVertical:25},text:{flex:1,flexDirection:"row",fontSize:16,textAlign:"justify",color:y.semanticColors.HEADER_PRIMARY},dateContainer:{height:16,alignSelf:"baseline"}});function f(t){let{date:e}=t;return React.createElement(h,{style:o.dateContainer,onPress:function(){n.toasts.open({content:n.moment(e).toLocaleString(),source:P.getAssetByName("clock").id})},onLongPress:function(){n.clipboard.setString(e.getTime().toString()),n.toasts.open({content:"Copied to clipboard"})}},React.createElement(r,{style:o.text},n.moment(e).fromNow()))}function m(t){let{channel:e}=t;return React.createElement(R,{style:o.container},React.createElement(r,{style:o.title},"Hewwo :3"),React.createElement(r,{style:o.text},"Topic: ",e.topic||"No topic.",`
-
-`,"Creation date: ",React.createElement(f,{date:new Date(g.extractTimestamp(e.id))}),`
-
-`,"Last message: ",e.lastMessageId?React.createElement(f,{date:new Date(g.extractTimestamp(e.lastMessageId))}):"No messages.",`
-
-`,"Last pin: ",e.lastPinTimestamp?React.createElement(f,{date:new Date(e.lastPinTimestamp)}):"No pins."))}const C=a.findByProps("getChannelPermissions","can"),T=a.findByProps("transitionToGuild"),x=a.findByProps("stores","fetchMessages"),{ChannelTypes:d}=a.findByProps("ChannelTypes"),{getChannel:M}=a.findByProps("getChannel"),A=[d.DM,d.GROUP_DM,d.GUILD_CATEGORY];function u(t){if(t==null||(typeof t=="string"&&(t=M(t)),!t||A.includes(t.type)))return!1;t.realCheck=!0;let e=!C.can(n.constants.Permissions.VIEW_CHANNEL,t);return delete t.realCheck,e}function B(){const t=a.findByName("MessagesWrapperConnected",!1);c.after("can",C,function(e,s){let[i,p]=e;return!p?.realCheck&&i===n.constants.Permissions.VIEW_CHANNEL?!0:s}),c.instead("transitionToGuild",T,function(e,s){const[i,p]=e;!u(p)&&typeof s=="function"&&s(e)}),c.instead("fetchMessages",x,function(e,s){const[i]=e;!u(i)&&typeof s=="function"&&s(e)}),c.instead("default",t,function(e,s){const i=e[0]?.channel;return!u(i)&&typeof s=="function"?s(...e):n.React.createElement(m,{channel:i})})}let E=[];var D={onLoad:function(){E.push(B())},onUnload:function(){for(const t of E)t()}};return l.default=D,Object.defineProperty(l,"__esModule",{value:!0}),l})({},vendetta.metro,vendetta.metro.common,vendetta.patcher,vendetta.ui,vendetta.ui.assets);
+(function(exports,metro,common,patcher,ui,assets){'use strict';const { View, Text, Pressable } = metro.findByProps("Button", "Text", "View");
+const snowflakeUtils = metro.findByProps("extractTimestamp");
+const MessageStyles = common.stylesheet.createThemedStyleSheet({
+  container: {
+    flex: 1,
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  title: {
+    fontFamily: common.constants.Fonts.PRIMARY_SEMIBOLD,
+    fontSize: 24,
+    textAlign: "left",
+    color: ui.semanticColors.HEADER_PRIMARY,
+    paddingVertical: 25
+  },
+  text: {
+    flex: 1,
+    flexDirection: "row",
+    fontSize: 16,
+    textAlign: "justify",
+    color: ui.semanticColors.HEADER_PRIMARY
+  },
+  dateContainer: {
+    height: 16,
+    alignSelf: "baseline"
+  }
+});
+function FancyDate(param) {
+  let { date } = param;
+  return /* @__PURE__ */ React.createElement(Pressable, {
+    style: MessageStyles.dateContainer,
+    onPress: function() {
+      common.toasts.open({
+        content: common.moment(date).toLocaleString(),
+        source: assets.getAssetByName("clock").id
+      });
+    },
+    onLongPress: function() {
+      common.clipboard.setString(date.getTime().toString());
+      common.toasts.open({
+        content: "Copied to clipboard"
+      });
+    }
+  }, /* @__PURE__ */ React.createElement(Text, {
+    style: MessageStyles.text
+  }, common.moment(date).fromNow()));
+}
+function HiddenChannel(param) {
+  let { channel } = param;
+  return /* @__PURE__ */ React.createElement(View, {
+    style: MessageStyles.container
+  }, /* @__PURE__ */ React.createElement(Text, {
+    style: MessageStyles.title
+  }, "Hewwo :3"), /* @__PURE__ */ React.createElement(Text, {
+    style: MessageStyles.text
+  }, "Topic: ", channel.topic || "No topic.", "\n\n", "Creation date: ", /* @__PURE__ */ React.createElement(FancyDate, {
+    date: new Date(snowflakeUtils.extractTimestamp(channel.id))
+  }), "\n\n", "Last message: ", channel.lastMessageId ? /* @__PURE__ */ React.createElement(FancyDate, {
+    date: new Date(snowflakeUtils.extractTimestamp(channel.lastMessageId))
+  }) : "No messages.", "\n\n", "Last pin: ", channel.lastPinTimestamp ? /* @__PURE__ */ React.createElement(FancyDate, {
+    date: new Date(channel.lastPinTimestamp)
+  }) : "No pins."));
+}const Permissions = metro.findByProps("getChannelPermissions", "can");
+const Router = metro.findByProps("transitionToGuild");
+const Fetcher = metro.findByProps("stores", "fetchMessages");
+const { ChannelTypes } = metro.findByProps("ChannelTypes");
+const { getChannel } = metro.findByProps("getChannel");
+const skipChannels = [
+  ChannelTypes.DM,
+  ChannelTypes.GROUP_DM,
+  ChannelTypes.GUILD_CATEGORY
+];
+function isHidden(channel) {
+  if (channel == void 0)
+    return false;
+  if (typeof channel === "string")
+    channel = getChannel(channel);
+  if (!channel || skipChannels.includes(channel.type))
+    return false;
+  channel.realCheck = true;
+  let res = !Permissions.can(common.constants.Permissions.VIEW_CHANNEL, channel);
+  delete channel.realCheck;
+  return res;
+}
+function patchForum() {
+  const MessagesConnected = metro.findByName("MessagesWrapperConnected", false);
+  patcher.after("can", Permissions, function(param, res) {
+    let [permID, channel] = param;
+    if (!channel?.realCheck && permID === common.constants.Permissions.VIEW_CHANNEL)
+      return true;
+    return res;
+  });
+  patcher.instead("transitionToGuild", Router, function(args, orig) {
+    const [_, channel] = args;
+    if (!isHidden(channel) && typeof orig === "function")
+      orig(args);
+  });
+  patcher.instead("fetchMessages", Fetcher, function(args, orig) {
+    const [channel] = args;
+    if (!isHidden(channel) && typeof orig === "function")
+      orig(args);
+  });
+  patcher.instead("default", MessagesConnected, function(args, orig) {
+    const channel = args[0]?.channel;
+    if (!isHidden(channel) && typeof orig === "function")
+      return orig(...args);
+    else
+      return common.React.createElement(HiddenChannel, {
+        channel
+      });
+  });
+}let patches = [];
+var index = {
+  onLoad: function() {
+    patches.push(patchForum());
+  },
+  onUnload: function() {
+    for (const unpatch of patches) {
+      unpatch();
+    }
+  }
+};exports.default=index;Object.defineProperty(exports,'__esModule',{value:true});return exports;})({},vendetta.metro,vendetta.metro.common,vendetta.patcher,vendetta.ui,vendetta.ui.assets);
