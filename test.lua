@@ -1,1 +1,1 @@
-print("script fetched and evaluated successfully")
+print("script fetched and evaluated successfully yahoo!!!")
