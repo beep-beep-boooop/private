@@ -1728,7 +1728,7 @@ function getDefaultExportFromCjs(x) {
   });
 })(pako$1, pako$1.exports);
 var pakoExports = pako$1.exports;
-var pako = /* @__PURE__ */ getDefaultExportFromCjs(pakoExports);function entryListMatch(msg) {
+var pako = /* @__PURE__ */ getDefaultExportFromCjs(pakoExports);function entryListMatch(msg, guild_id) {
   const modeCheck = !!plugin.storage.mode;
   const exactMatch = !!plugin.storage.exactMatch;
   const userList = [
@@ -1754,7 +1754,7 @@ var pako = /* @__PURE__ */ getDefaultExportFromCjs(pakoExports);function entryLi
     }
   }
   if (guildList.length > 0) {
-    if (guildList.includes(ChannelStore.getChannel(msg?.channel_id)?.guild_id)) {
+    if (guildList.includes(guild_id)) {
       return !modeCheck;
     }
   }
@@ -2639,7 +2639,7 @@ const edit$1 = ` \`\uFF3B EDITED at %t ${endofedited}\`
 const downloadMedia = metro.findByProps("downloadMediaAsset");
 const MessageStore$2 = metro.findByProps("getMessage", "getMessages");
 const UserStore$4 = metro.findByStoreName("UserStore");
-const ChannelStore$4 = metro.findByProps("getChannel", "getDMFromUserId");
+const ChannelStore$3 = metro.findByProps("getChannel", "getDMFromUserId");
 const SelectedChannelStore = metro.findByStoreName("SelectedChannelStore");
 let lastDeletedId = null;
 let lastEditedTimestamp = "";
@@ -2709,7 +2709,7 @@ function flux(args) {
           await modifyMessage(type == edited ? "edit" : "delete", {
             ...extractedProperties,
             content: type == edited ? (message?.edited_timestamp ? edit$1.replace(/%t/g, `<t:${Math.floor(Date.parse(message?.edited_timestamp) / 1e3)}:T>`) : " `\uFF3B EDITED 85549acb9dc8443d8f5a88dc23d6f155`\n\n") + updatedContent : `${msg?.content}`,
-            guild_id: ChannelStore$4?.getChannel(msg?.channel_id).guild_id,
+            guild_id: ChannelStore$3?.getChannel(msg?.channel_id).guild_id,
             dateofaction: `${Math.floor(Date.now() / 1e3)}`,
             embeds: msg?.embeds,
             attachments: msg?.attachments,
@@ -2740,7 +2740,7 @@ function flux(args) {
         /*type: 0,*/
         //flags: 64,
         channel_id: msg?.channel_id,
-        guild_id: ChannelStore$4?.getChannel(msg?.channel_id)?.guild_id,
+        guild_id: ChannelStore$3?.getChannel(msg?.channel_id)?.guild_id,
         edited_timestamp: msg?.edited_timestamp || msg?.editedTimestamp || null,
         state: "SENT",
         //timestamp: deletedLogDate
@@ -3138,7 +3138,7 @@ function ActionSheetRow$1(param) {
 }const edit = " `\uFF3B EDITED at %t 85549acb9dc8443d8f5a88dc23d6f155`\n\n";
 const editInput = " 85549acb9dc8443d8f5a88dc23d6f155`\n\n";
 metro.findByStoreName("MessageStore");
-const ChannelStore$3 = metro.findByProps("getChannel", "getDMFromUserId");
+const ChannelStore$2 = metro.findByProps("getChannel", "getDMFromUserId");
 const ActionSheet = metro.findByProps("openLazy", "hideActionSheet");
 function extractProperties(original) {
   try {
@@ -3228,7 +3228,7 @@ function patchSheet() {
                 message: {
                   ...message,
                   content: `${trimmed.substring(trimmed.lastIndexOf(editInput) + editInput.length)}`,
-                  guild_id: ChannelStore$3.getChannel(message?.channel_id)?.guild_id,
+                  guild_id: ChannelStore$2.getChannel(message?.channel_id)?.guild_id,
                   embeds: null,
                   messageReference: null
                 },
@@ -3249,7 +3249,7 @@ function patchSheet() {
                 await modifyMessage("delete", {
                   ...extractProperties(message),
                   content: `${messageContent[1] || messageContent[0]}`,
-                  guild_id: ChannelStore$3.getChannel(message?.channel_id).guild_id,
+                  guild_id: ChannelStore$2.getChannel(message?.channel_id).guild_id,
                   dateofaction: `${Math.floor(Date.now() / 1e3)}`,
                   embeds: message?.embeds,
                   edited: message?.editedTimestamp != null
@@ -3259,7 +3259,7 @@ function patchSheet() {
                 await modifyMessage("edit", {
                   ...extractProperties(message),
                   content: (message?.editedTimestamp ? edit.replace(/%t/g, `<t:${Math.floor(Date.parse(message?.editedTimestamp) / 1e3)}:T>`) : " `\uFF3B EDITED 85549acb9dc8443d8f5a88dc23d6f155`\n\n") + updatedContent,
-                  guild_id: ChannelStore$3.getChannel(message?.channel_id)?.guild_id,
+                  guild_id: ChannelStore$2.getChannel(message?.channel_id)?.guild_id,
                   attachments: message?.attachments,
                   edited: message.editedTimestamp != null,
                   dateofaction: `${Math.floor(Date.now() / 1e3)}`
@@ -7279,7 +7279,7 @@ function Chat(param) {
 metro.findByProps("showSimpleActionSheet");
 metro.findByProps("pushModal");
 const UserStore$2 = metro.findByStoreName("UserStore");
-const ChannelStore$2 = metro.findByProps("getChannel", "getDMFromUserId");
+const ChannelStore$1 = metro.findByProps("getChannel", "getDMFromUserId");
 function User(param) {
   let { author, mode, onPress } = param;
   let isInStore;
@@ -7292,7 +7292,7 @@ function User(param) {
   const isGuildIcon = getGuildIcon(author);
   const isChannel = getChannelName(author) || false;
   const isChannelIcon = getChannelIcon(author);
-  const isGuild = ChannelStore$2.getChannel(author)?.guild_id || null;
+  const isGuild = ChannelStore$1.getChannel(author)?.guild_id || null;
   let readableName = false;
   try {
     if (mode == "user")
@@ -7675,7 +7675,7 @@ const { useState, useRef, useEffect } = common.React;
 metro.findByStoreName("SortedGuildStore");
 const UserStore$1 = metro.findByStoreName("UserStore");
 const UncachedUserStore = metro.findByProps("fetchProfile");
-const ChannelStore$1 = metro.findByProps("getChannel", "getDMFromUserId");
+const ChannelStore = metro.findByProps("getChannel", "getDMFromUserId");
 const modals = metro.findByProps("pushModal");
 const { showSimpleActionSheet } = metro.findByProps("showSimpleActionSheet");
 const { hideActionSheet } = metro.findByProps("openLazy", "hideActionSheet");
@@ -8592,7 +8592,7 @@ function showEntryAction(mode, content) {
     }
   }
   if (mode == "channel") {
-    usr = ChannelStore$1.getChannel(content)?.guild_id || "@me";
+    usr = ChannelStore.getChannel(content)?.guild_id || "@me";
   }
   showSimpleActionSheet({
     key: "CardOverflow",
