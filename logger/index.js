@@ -2658,6 +2658,7 @@ function flux(args) {
   let msg = MessageStore$2.getMessage(event?.channelId || message?.id, event?.id || message?.id);
   if (!msg || msg?.author?.id == "1" || msg?.flags & 1 << 16 !== 0 || !msg.id)
     return args;
+  const guild_id = ChannelStore$3?.getChannel(msg?.channel_id)?.guild_id;
   if (plugin.storage.dontAuthor && msg?.author?.id == UserStore$4.getCurrentUser()?.id || plugin.storage.onlyLog && msg?.channel_id != SelectedChannelStore?.getChannelId() || plugin.storage.dontBot && msg?.author.bot || msg?.content == "")
     return args;
   let deletedLogDate;
@@ -2665,7 +2666,7 @@ function flux(args) {
     deletedLogDate = new Date().toLocaleTimeString("en-US", {
       hour12: plugin.storage.timeFormat
     });
-  const matchResult = entryListMatch(msg);
+  const matchResult = entryListMatch(msg, guild_id);
   (async function() {
     try {
       if (type == removed && plugin.storage.dontPK) {
@@ -2709,7 +2710,7 @@ function flux(args) {
           await modifyMessage(type == edited ? "edit" : "delete", {
             ...extractedProperties,
             content: type == edited ? (message?.edited_timestamp ? edit$1.replace(/%t/g, `<t:${Math.floor(Date.parse(message?.edited_timestamp) / 1e3)}:T>`) : " `\uFF3B EDITED 85549acb9dc8443d8f5a88dc23d6f155`\n\n") + updatedContent : `${msg?.content}`,
-            guild_id: ChannelStore$3?.getChannel(msg?.channel_id).guild_id,
+            guild_id,
             dateofaction: `${Math.floor(Date.now() / 1e3)}`,
             embeds: msg?.embeds,
             attachments: msg?.attachments,
@@ -2740,7 +2741,7 @@ function flux(args) {
         /*type: 0,*/
         //flags: 64,
         channel_id: msg?.channel_id,
-        guild_id: ChannelStore$3?.getChannel(msg?.channel_id)?.guild_id,
+        guild_id,
         edited_timestamp: msg?.edited_timestamp || msg?.editedTimestamp || null,
         state: "SENT",
         //timestamp: deletedLogDate
