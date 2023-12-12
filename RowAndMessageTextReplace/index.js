@@ -1,1 +1,47 @@
-(function(a,n,c,r){"use strict";n.findByProps("startEditMessage"),n.findByProps("getMessage","getMessages");const s=[];n.findByProps("_channelMessages"),n.findByProps("updateMessageRecord","createMessageRecord"),n.findByName("MessageRecord",!1);const i=n.findByName("RowManager");let u='row.message.edited = "pee"',f=new Function("row","data",u),g='message.content = "pee"',d=new Function("message",g);s.push(r.before("actionHandler",c.FluxDispatcher._actionHandlers._computeOrderedActionHandlers("MESSAGE_CREATE").find(function(e){return e.name==="MessageStore"}),function(e){let o=e[0].message;try{d(o)}catch(t){console.error(t)}})),s.push(r.before("actionHandler",c.FluxDispatcher._actionHandlers._computeOrderedActionHandlers("LOAD_MESSAGES_SUCCESS").find(function(e){return e.name==="MessageStore"}),function(e){e[0].messages.forEach(function(o){try{d(o)}catch(t){console.error(t)}})})),s.push(r.after("generate",i.prototype,function(e,o){let[t]=e;if(t.rowType===1)try{f(o,t)}catch(p){console.error(p)}}));const l=function(){s.forEach(function(e){return e()})};return a.onUnload=l,a})({},vendetta.metro,vendetta.metro.common,vendetta.patcher);
+(function(exports,metro,common,patcher){'use strict';metro.findByProps("startEditMessage");
+metro.findByProps("getMessage", "getMessages");
+const patches = [];
+metro.findByProps("_channelMessages");
+metro.findByProps("updateMessageRecord", "createMessageRecord");
+metro.findByName("MessageRecord", false);
+const RowManager = metro.findByName("RowManager");
+let codeRow = `row.message.edited = "pee"`;
+let customRow = new Function("row", "data", codeRow);
+let codeMessage = `message.content = "pee"`;
+let customMessage = new Function("message", codeMessage);
+patches.push(patcher.before("actionHandler", common.FluxDispatcher._actionHandlers._computeOrderedActionHandlers("MESSAGE_CREATE").find(function(i) {
+  return i.name === "MessageStore";
+}), function(args) {
+  let message = args[0].message;
+  try {
+    customMessage(message);
+  } catch (error) {
+    console.error(error);
+  }
+}));
+patches.push(patcher.before("actionHandler", common.FluxDispatcher._actionHandlers._computeOrderedActionHandlers("LOAD_MESSAGES_SUCCESS").find(function(i) {
+  return i.name === "MessageStore";
+}), function(args) {
+  args[0].messages.forEach(function(message) {
+    try {
+      customMessage(message);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+}));
+patches.push(patcher.after("generate", RowManager.prototype, function(param, row) {
+  let [data] = param;
+  if (data.rowType !== 1)
+    return;
+  try {
+    customRow(row, data);
+  } catch (error) {
+    console.error(error);
+  }
+}));
+const onUnload = function() {
+  patches.forEach(function(unpatch) {
+    return unpatch();
+  });
+};exports.onUnload=onUnload;return exports;})({},vendetta.metro,vendetta.metro.common,vendetta.patcher);
