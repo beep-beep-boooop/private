@@ -1,1 +1,1 @@
-{"name":"Message Logger but now with Edit Logger","description":"Logs edits and deletions for moderation purposes.","authors":[{"name":"You!","id":"0"}],"main":"index.js","vendetta":{"icon":"ic_audit_log_24px"},"hash":"4a6c56ece7547005c768a8aacc2055a7f8a8898ec3ddd74c17be352220b8e9e3"}
+{"name":"Message Logger but now with Edit Logger","description":"Logs edits and deletions for moderation purposes.","authors":[{"name":"You!","id":"0"}],"main":"index.js","vendetta":{"icon":"ic_audit_log_24px"},"hash":"5ba7448fad479dd2e4c1ee30f3079e54f7db80bbf8efc4c0f55ad7e86769d7ba"}
